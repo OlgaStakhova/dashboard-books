@@ -26,7 +26,7 @@ export const Navbar: FC = () => {
               'navbar-item',
               { 'has-background-grey-lighter': isActive },
             )}
-            to="/addAbook"
+            to="/add-book"
           >
             Add a Book
             </NavLink>

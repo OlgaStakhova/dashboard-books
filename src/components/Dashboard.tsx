@@ -11,15 +11,17 @@ import {
     books: Book[], 
     isLoad: boolean,
     errorLoad: boolean,
+    onDeleteBookId: (id: number) => void,
   }
   
   export const Dashboard: FC<Props> = (props) => {
-    const {books, isLoad, errorLoad } = props
+    const {books, isLoad, errorLoad, onDeleteBookId } = props
     const [searchParams, setSearchParams] = useSearchParams();
     const [isActiveSort, setIsActiveSort] = useState(false);
   
     const order = searchParams.get('order') || null;
     const sort = searchParams.get('sort') || null;
+
   
     const activateSort = (param: boolean) => setIsActiveSort(param);
   
@@ -41,7 +43,6 @@ import {
       });
       setSearchParams(searchParams);
     }, [searchParams, setSearchParams]);
-    ///????[?]//////
   
     const preparedBooks = filtredBooks(
       books, order, sort,
@@ -56,7 +57,7 @@ import {
             <div className="box table-container">
             {isLoad && <Loader />}
 
-            {!errorLoad && !isLoad && (
+            {errorLoad && !isLoad && (
                 <p className="has-text-danger">
                   Something went wrong
                 </p>
@@ -74,6 +75,7 @@ import {
                   isActiveSort={isActiveSort}
                   updateSearch={updateSearch}
                   activateSort={activateSort}
+                  onDeleteBookId={onDeleteBookId}
                 />
               )}
             </div>

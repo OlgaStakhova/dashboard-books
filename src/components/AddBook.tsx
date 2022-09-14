@@ -1,15 +1,16 @@
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import { FormEvent, useEffect, useState } from 'react';
-import { Book } from '../types/Book';
+import { Book, BookCreateData, BookUpdatedData } from '../types/Book';
 import { TextField } from "./TextField";
+import { NavLink, useSearchParams } from 'react-router-dom';
+import { getByIdBook } from "../service/api";
 
 type Props = {
-    onAdd: (book: Book) => void
+    onAdd: (book: BookCreateData) => Promise<void>,
+    onEdit: (id: number, book:BookUpdatedData) => Promise<void>,
   };
 
-export const AddAbook: FC<Props> = ({ onAdd }) => {(
-    <h1>Form add or edit book</h1>
-);
+export const AddBook: FC<Props> = ({ onAdd, onEdit }) => {
 
     const [count, setCount] = useState(0);
     const [bookTitle, setBookTitle] = useState('');
@@ -17,15 +18,33 @@ export const AddAbook: FC<Props> = ({ onAdd }) => {(
     const [category, setCategory] = useState('');
     const [ISBN, setISBN] = useState('');
     const [bookCounter, setBookCounter] = useState(0);
+    const [ successAdd, setSuccessAdd] = useState(false);
+    const [ errorAction, setErrorAction] = useState(false);
+    const [searchParams] = useSearchParams();
+
+    const editId = searchParams.get('editId') || null;
   
     const requiredControl = [bookTitle, authorName, category, ISBN].length;
+
+    useMemo(() => {
+      const editBookId = editId && Number(editId);
+      if(editBookId) {
+        getByIdBook(editBookId)
+         .then((updatedBook: Book) => {
+            setBookTitle(updatedBook.bookTitle);
+            setAuthorName(updatedBook.authorName);
+            setCategory(updatedBook.category);
+            setISBN(updatedBook.ISBN);
+         })
+      }
+    },[editId])
   
     const resetForm = () => {
       setCount(0);
       setBookTitle('');
       setAuthorName('');
       setCategory('');
-      setISBN('0');
+      setISBN('');
     };
   
     useEffect(() => {
@@ -65,26 +84,49 @@ export const AddAbook: FC<Props> = ({ onAdd }) => {(
     
       const handelSubmitForm = (event: FormEvent) => {
         event.preventDefault();
-    
-        const newBook: Book = {
-            bookTitle,
-            authorName,
-            category,
-            ISBN,
+        const newBook: BookCreateData = {
+          bookTitle,
+          authorName,
+          category,
+          ISBN,
         };
-    
-        onAdd(newBook);
-        resetForm();
-        setBookCounter(bookCounter + 1);
+        if (!editId) {
+          onAdd(newBook)
+          .then(() => {
+            setSuccessAdd(true);
+            setTimeout(() => {
+              setSuccessAdd(false)
+            }, 2000);
+            resetForm();
+          })
+          .catch((error) => {
+            setErrorAction(true)
+          });
+          setBookCounter(bookCounter + 1);
+        } else {
+          onEdit(Number(editId), newBook)
+          .then(() => {
+            setSuccessAdd(true);
+            setTimeout(() => {
+              setSuccessAdd(false)
+            }, 2000);
+            resetForm();
+          })
+          .catch((error) => {
+            setErrorAction(true)
+          });
+        }
       };
+      
       return (
+        <>
       <form
       className="NewBook"
       onSubmit={handelSubmitForm}
       key={bookCounter}
     >
       <h2 className="title">
-        Add or edit a book
+      { `${editId ? "Edit" : "Add"} a book` }
       </h2>
 
       <TextField
@@ -130,10 +172,26 @@ export const AddAbook: FC<Props> = ({ onAdd }) => {(
               className="button is-link"
               disabled={count < requiredControl}
             >
-              Add
+              { editId ? "Edit" : "Add" }
             </button>
           </div>
         </div>
       </form>
+     { !editId && successAdd &&  <div className="notification is-success is-light">
+      <button className="delete" onClick={() => setSuccessAdd(false)}></button>
+        The book has been <strong>added successfully</strong>. 
+      You can add the next one or go to <NavLink to="/">Dashboard</NavLink>.
+    </div>}
+    { editId && successAdd &&  <div className="notification is-success is-light">
+      <button className="delete" onClick={() => setSuccessAdd(false)}></button>
+        The book has been <strong>edit successfully</strong>. 
+      You can go on <NavLink to="/">Dashboard</NavLink>.
+    </div>}
+    { errorAction && <div className="notification is-error is-light">
+      <button className="delete" onClick={() => setErrorAction(false)}></button>
+       <strong>Something went wrong</strong>. 
+      try again!
+    </div>}
+    </>
     );
   };

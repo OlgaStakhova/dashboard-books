@@ -1,24 +1,25 @@
 import { FC } from "react";
 import { Book } from "../types/Book";
 import {
-    Link, useLocation, useParams, useResolvedPath, useSearchParams,
+    Link, NavLink, useLocation, useResolvedPath, useSearchParams,
   } from 'react-router-dom';
   import cn from 'classnames';
 
 interface Props {
     books: Book[],
     isActiveSort: boolean,
-  activateSort: (param: boolean) => void,
-  updateSearch: (params: { [key: string]: string[] | string | null }) => void,
-}
+    activateSort: (param: boolean) => void,
+    updateSearch: (params: { [key: string]: string[] | string | null }) => void,
+    onDeleteBookId: (id: number) => void,
+  }
 
 export const BooksTable: FC<Props> = (props) => {
-    const { books,updateSearch, activateSort, isActiveSort, } = props;
-    const [searchParams] = useSearchParams();
+  const { books, updateSearch, activateSort, isActiveSort, onDeleteBookId } = props;
+  const [searchParams] = useSearchParams();
   const order = searchParams.get('order') || null;
   const sort = searchParams.get('sort') || null;
+  const ISBN = searchParams.get('ISBN') || null;
 
-  const { ISBN = 0 } = useParams();
   const location = useLocation();
   const parentPath = useResolvedPath('../').pathname;
   const isSelected = (book: Book) => book.ISBN === ISBN;
@@ -92,12 +93,12 @@ export const BooksTable: FC<Props> = (props) => {
   className={cn({
     'has-background-warning': isSelected(book),
   })}
-  key={book.ISBN}
+  key={book.id}
 >
   <td>
     <Link
       to={{
-        pathname: `${parentPath}${book.ISBN}`,
+        pathname: `${parentPath}${book.id}`,
         search: location.search,
       }}
     >
@@ -109,11 +110,16 @@ export const BooksTable: FC<Props> = (props) => {
   <td>{book.category}</td>
   <td>{book.ISBN}</td>
   <td>
-
-    <button>Edit</button>
+    <NavLink to={`/add-book?editId=${book.id}`}>
+    <button>
+      Edit
+    </button>
+    </NavLink>
   </td>
   <td>
-    <button>Delete</button>
+    <button onClick={() => {onDeleteBookId(book.id)}}>
+      Delete
+    </button>
   </td>
 </tr>
 ))}
