@@ -40,7 +40,12 @@ export const TextField: React.FC<Props> = ({
           type="text"
           placeholder={`Enter ${label}`}
           value={value}
-          onChange={event => onChange(name, event.target.value)}
+          onChange={event => {
+            if (event.target.value.trim().length < 1) {
+              return;
+            }
+            onChange(name, event.target.value)
+          }}
           onBlur={() => {
             setToched(true);
           }}

@@ -108,6 +108,7 @@ export const AddBook: FC<Props> = ({ onAdd, onEdit }) => {
       category,
       ISBN,
     };
+
     if (!editId) {
       onAdd(newBook)
         .then(() => {
