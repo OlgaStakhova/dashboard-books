@@ -1,28 +1,23 @@
 import { FC } from "react";
 import { Book } from "../types/Book";
 import {
-    Link, NavLink, useLocation, useResolvedPath, useSearchParams,
-  } from 'react-router-dom';
-  import cn from 'classnames';
+ NavLink, useSearchParams,
+} from 'react-router-dom';
+import cn from 'classnames';
 
 interface Props {
-    books: Book[],
-    isActiveSort: boolean,
-    activateSort: (param: boolean) => void,
-    updateSearch: (params: { [key: string]: string[] | string | null }) => void,
-    onDeleteBookId: (id: number) => void,
-  }
+  books: Book[],
+  isActiveSort: boolean,
+  activateSort: (param: boolean) => void,
+  updateSearch: (params: { [key: string]: string[] | string | null }) => void,
+  onDeleteBookId: (id: number) => void,
+}
 
 export const BooksTable: FC<Props> = (props) => {
   const { books, updateSearch, activateSort, isActiveSort, onDeleteBookId } = props;
   const [searchParams] = useSearchParams();
   const order = searchParams.get('order') || null;
   const sort = searchParams.get('sort') || null;
-  const ISBN = searchParams.get('ISBN') || null;
-
-  const location = useLocation();
-  const parentPath = useResolvedPath('../').pathname;
-  const isSelected = (book: Book) => book.ISBN === ISBN;
 
   const headers: [keyof Book, string][] = [
     ['bookTitle', 'Book title'],
@@ -37,7 +32,7 @@ export const BooksTable: FC<Props> = (props) => {
     >
       <thead>
         <tr>
-        {headers.map((title) => (
+          {headers.map((title) => (
             <th key={title[0]}>
               <span className="is-flex is-flex-wrap-nowrap">
                 {title[1]}
@@ -80,49 +75,40 @@ export const BooksTable: FC<Props> = (props) => {
               </span>
             </th>
           ))}
-          <th>Edit</th>
-          <th>DELETE</th>
+          <th colSpan={2}>Actions</th>
         </tr>
       </thead>
 
       <tbody>
-      {books.map(book => (
+        {books.map(book => (
 
-<tr
-  data-cy="person"
-  className={cn({
-    'has-background-warning': isSelected(book),
-  })}
-  key={book.id}
->
-  <td>
-    <Link
-      to={{
-        pathname: `${parentPath}${book.id}`,
-        search: location.search,
-      }}
-    >
-      {book.bookTitle}
-    </Link>
-  </td>
+          <tr
+            key={book.id}
+          >
+            <td>
+              {book.bookTitle}
+            </td>
 
-  <td>{book.authorName}</td>
-  <td>{book.category}</td>
-  <td>{book.ISBN}</td>
-  <td>
-    <NavLink to={`/add-book?editId=${book.id}`}>
-    <button>
-      Edit
-    </button>
-    </NavLink>
-  </td>
-  <td>
-    <button onClick={() => {onDeleteBookId(book.id)}}>
-      Delete
-    </button>
-  </td>
-</tr>
-))}
+            <td>{book.authorName}</td>
+            <td>{book.category}</td>
+            <td>{book.ISBN}</td>
+            <td>
+              <NavLink to={`/add-book?editId=${book.id}`}>
+                <button className="button is-light">
+                  Edit
+                </button>
+              </NavLink>
+            </td>
+            <td>
+              <button 
+                className="button is-light"
+                onClick={() => { onDeleteBookId(book.id) }}
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );

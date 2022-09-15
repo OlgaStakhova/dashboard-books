@@ -11,7 +11,7 @@ export const App: FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoad, setIsLoad] = useState(false);
   const [errorLoad, setErroreLoad] = useState(false);
-  
+
   useEffect(() => {
     setIsLoad(true);
     setErroreLoad(false)
@@ -25,31 +25,31 @@ export const App: FC = () => {
 
   const handlerDeleteBook = (id: number) => {
     deleteBook(id)
-    .then(() => {
-      setBooks((prevBooks) => prevBooks.filter(book => book.id !== id )); 
-    } )  
-    .catch((error) => {
-      setErroreLoad(true)
-    });
+      .then(() => {
+        setBooks((prevBooks) => prevBooks.filter(book => book.id !== id));
+      })
+      .catch((error) => {
+        setErroreLoad(true)
+      });
   }
 
   const addBookHandler = (data: BookCreateData) => {
     return createBook(data)
-    .then((bookResponse) => {
-      bookResponse && setBooks((prevBooks) => ([...prevBooks, bookResponse]));
-    })
+      .then((bookResponse) => {
+        bookResponse && setBooks((prevBooks) => ([...prevBooks, bookResponse]));
+      })
   };
 
- const handlerEditBook = (id: number, updatedBook: BookUpdatedData) => {
-  return patchBook(id, updatedBook)
-  .then((bookUpdatedResponse) => {
-    const idx = books.findIndex(book => book.id === id)
-    bookUpdatedResponse && setBooks((prevBooks) => {
-      prevBooks.splice(idx, 1, bookUpdatedResponse);
-      return prevBooks;
-    });
-  })
- }
+  const handlerEditBook = (id: number, updatedBook: BookUpdatedData) => {
+    return patchBook(id, updatedBook)
+      .then((bookUpdatedResponse) => {
+        const idx = books.findIndex(book => book.id === id)
+        bookUpdatedResponse && setBooks((prevBooks) => {
+          prevBooks.splice(idx, 1, bookUpdatedResponse);
+          return prevBooks;
+        });
+      })
+  }
 
   return (
     <div data-cy="app">
@@ -57,16 +57,16 @@ export const App: FC = () => {
 
       <div className="section">
         <div className="container">
-        <Routes>
+          <Routes>
             <Route
               path="/"
               element={
-              < Dashboard
-                 books={books}
-                 isLoad={isLoad}
-                 errorLoad={errorLoad}
-                 onDeleteBookId={handlerDeleteBook}
-               />
+                < Dashboard
+                  books={books}
+                  isLoad={isLoad}
+                  errorLoad={errorLoad}
+                  onDeleteBookId={handlerDeleteBook}
+                />
               }
             />
 
@@ -82,5 +82,5 @@ export const App: FC = () => {
         </div>
       </div>
     </div>
- );
+  );
 };

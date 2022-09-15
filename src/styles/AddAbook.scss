@@ -2,7 +2,30 @@
     margin: 0 auto;
     max-width: 600px;
 }
+
 .notification {
     max-width: 400px;
     margin: 0 auto;
+}
+
+.fas::before {
+    content: '';
+    display: block;
+    width: 23px;
+    height: 23px;
+}
+
+.fa-sort::before {
+    background-image: url('../images/icon-sort.jpg');
+    background-size: cover;
+}
+
+.fa-sort-up::before {
+    background-image: url('../images/icon-sort-up.jpg');
+    background-size: cover;
+}
+
+.fa-sort-down::before {
+    background-image: url('../images/icon-sort-down.jpg');
+    background-size: cover;
 }

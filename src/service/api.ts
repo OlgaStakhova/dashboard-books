@@ -7,7 +7,7 @@ type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 function request<T>(
   url: string,
   method: RequestMethod = 'GET',
-  data: any = null, 
+  data: any = null,
 ): Promise<T> {
   const options: RequestInit = { method };
 
@@ -38,7 +38,7 @@ export const client = {
 
 
 export async function getBooks(): Promise<Book[]> {
-   return client.get('/');
+  return client.get('/');
 }
 
 export const getByIdBook = (id: number): Promise<Book> => {

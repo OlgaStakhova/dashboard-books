@@ -5,14 +5,13 @@ import { FC } from 'react';
 export const Navbar: FC = () => {
   return (
     <nav
-      data-cy="nav"
       className="navbar is-fixed-top has-shadow"
       role="navigation"
       aria-label="main navigation"
     >
       <div className="container">
         <div className="navbar-brand">
-        <NavLink
+          <NavLink
             className={({ isActive }) => cn(
               'navbar-item',
               { 'has-background-grey-lighter': isActive },
@@ -29,7 +28,7 @@ export const Navbar: FC = () => {
             to="/add-book"
           >
             Add a Book
-            </NavLink>
+          </NavLink>
         </div>
       </div>
     </nav>
