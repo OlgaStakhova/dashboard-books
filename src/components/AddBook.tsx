@@ -4,6 +4,8 @@ import { Book, BookCreateData, BookUpdatedData } from '../types/Book';
 import { TextField } from "./TextField";
 import { NavLink, useSearchParams } from 'react-router-dom';
 import { getByIdBook } from "../service/api";
+import { SelectField } from "./SelectField";
+
 
 type Props = {
   onAdd: (book: BookCreateData) => Promise<void>,
@@ -21,6 +23,22 @@ export const AddBook: FC<Props> = ({ onAdd, onEdit }) => {
   const [successAdd, setSuccessAdd] = useState(false);
   const [errorAction, setErrorAction] = useState(false);
   const [searchParams] = useSearchParams();
+
+  const categoriesOptions = [
+    {
+      value: "category-1",
+      label: "category-1",
+      default: true,
+    },
+    {
+      value: "category-2",
+      label: "category-2",
+    },
+    {
+      value: "category-3",
+      label: "category-3",
+    },
+  ]
 
   const editId = searchParams.get('editId') || null;
 
@@ -43,7 +61,7 @@ export const AddBook: FC<Props> = ({ onAdd, onEdit }) => {
     setCount(0);
     setBookTitle('');
     setAuthorName('');
-    setCategory('');
+    setCategory(categoriesOptions[0].value);
     setISBN('');
   };
 
@@ -146,12 +164,13 @@ export const AddBook: FC<Props> = ({ onAdd, onEdit }) => {
           count={count}
         />
 
-        <TextField
+        <SelectField
           name="category"
           label="Category"
           value={category}
           onChange={handlerInput}
           count={count}
+          categories={categoriesOptions}
           required
         />
 

@@ -9,13 +9,13 @@
   json-server --watch db.json
 
 (for check start server you can go to http://localhost:3000/books/1, you'll get 
-{
-  "bookTitle": "erg",
-  "authorName": "erg",
-  "category": "ergerg",
-  "ISBN": "ergerg",
-  "id": 1
-}
+    {
+      "bookTitle": "sdg",
+      "authorName": "sdg",
+      "category": "category-2",
+      "ISBN": "sdgsdg",
+      "id": 1
+    }
 )
 
 3. Then you need start application, for this you insert comand in second terminal:
